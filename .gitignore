@@ -1,0 +1,21 @@
+# Arquivos compilados
+
+*.class
+bin/
+build
+out/
+target/
+
+# arquivos de db
+
+*.db
+*.sqlite
+*.jar
+
+#Configuracao
+.vscode
+.classpath
+.project
+.idea/
+*.iml
+.vscode
