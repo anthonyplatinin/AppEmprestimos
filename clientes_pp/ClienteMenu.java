@@ -65,8 +65,7 @@ public class ClienteMenu {
         }
     }
 
-    public void tem_emprestimo(String cpf) { //Aqui faz uma verificacao se ha algum emprestimo
-        //EmprestimosApp app = new EmprestimosApp();
+    public void tem_emprestimo(String cpf) { //Aqui faz uma verificacao se ha algum emprestimo 
         String query = "SELECT cpf, valor_emprestimo, valor_juros, data_pegado, data_prazo FROM tbl_emprestimo WHERE cpf = ?"; //aqui faz uma query para o tbl_emprestimo, se existe, tem emprestimo
 
         @SuppressWarnings("resource")
@@ -87,7 +86,7 @@ public class ClienteMenu {
                 String vencimento = rs.getString("data_prazo");
 
                 System.out.println("VALOR: " + valor_emprestado + " VALOR TOTAL: " + valor_com_j + " DATA: " + data_que_pegou + " VENCIMENTO: " + vencimento);
-                app.verifica_data(LocalDate.parse(data_que_pegou), LocalDate.parse(vencimento));
+                app.verifica_data(cpf,valor_com_j,LocalDate.parse(data_que_pegou), LocalDate.parse(vencimento));
                 this.tem_emprestimo = true;
 
                 System.out.println("[1] - PAGAR | [2] - SAIR");
@@ -111,23 +110,36 @@ public class ClienteMenu {
     public void pagar_emprestimo(String cpf, double pagamento, double valor) {
         //valor = valor do emprestimo contabilizando os juros
         if(pagamento == valor) { //checando se o valor do pagamento e igual ao valor do em.
-            String remover_divida = "DELETE FROM tbl_emprestimo WHERE cpf = ?";
+            String remover_divida_1 = "DELETE FROM tbl_emprestimo WHERE cpf = ?";
+            String remover_divida_2 = "DELETE FROM tbl_devedores WHERE cpf = ?"; 
 
             Database_e database = new Database_e();
             Connection conecao = null;
-            try {
-                conecao=database.conecao_database("emprestimos");
-                PreparedStatement pr = conecao.prepareStatement(remover_divida);
-                pr.setString(1,cpf);
 
-                int linhas = pr.executeUpdate();
-                if(linhas>0) {
-                    System.out.println("Divida paga com sucesso!");
-                } else {
-                    System.out.println("Sistema nao concluiu o pagamento!");
-                }
+            int linhas = 0;
+            try {
+                conecao = database.conecao_database("emprestimos");
+                PreparedStatement remover_emprestimo = conecao.prepareStatement(remover_divida_1); 
+                remover_emprestimo.setString(1,cpf);
+                linhas = remover_emprestimo.executeUpdate(); 
             } catch(SQLException e) {
                 System.out.println("Erro no servidor: " + e);
+            } 
+
+            System.out.println("Removendo divida");
+            try {
+                conecao = database.conecao_database("emprestimos");
+                PreparedStatement remover_devedor = conecao.prepareStatement(remover_divida_2);
+                remover_devedor.setString(1,cpf);
+                linhas = remover_devedor.executeUpdate();
+            } catch(SQLException e) {
+                System.out.println("Erro no servidor: " + e);
+            }
+
+            if(linhas > 0) {
+                System.out.println("Pagamento setado com sucesso!");
+            } else {
+                System.out.println("Sistema nao pode concluir o pagamento!");
             }
         } else if(pagamento > valor || pagamento < valor) {
             System.out.println("Valor menor ou maior");
