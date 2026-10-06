@@ -2,9 +2,7 @@ package Emprestimos.databases;
 
 //aqui ele apenas faz a conecao A database desse app
 
-import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.sql.Connection;
+import java.sql.*; 
 
 public class Database_e {
     public Connection conecao_database(String database) throws SQLException {
@@ -14,8 +12,7 @@ public class Database_e {
 
         if(database.equals("nacional")) {
             url = "jdbc:mysql://localhost:3306/db_nacional"; //aqui guarda as infos desse app
-        }
-        if(database.equals("emprestimos")) {
+        } else if(database.equals("emprestimos")) {
             url = "jdbc:mysql://localhost:3306/db_emprestimos";
         }
 

@@ -1,20 +1,27 @@
 package Emprestimos;
 
 import java.util.Scanner;
-import Emprestimos.clientes_pp.ClienteMenu;
-//import Emprestimos.clientes_pp.CriarOuLogar;
+import Emprestimos.Clientes_CadastroLogin.*;
 
 class Interface {
-    public static void main(String[] args) { //ESSA PARTE E TEMPORARIA
+    public static void main(String[] args) { //ESSA PARTE E TEMPORARIA 
+        System.out.println("=== BEM VINDO AO DIN FACIL ===");
+        System.out.println("[1 CADASTRO] [2 LOGIN]");
+
+        Cadastro cd = new Cadastro();
+        
         Scanner scn = new Scanner(System.in);
-
-        ClienteMenu cliente = new ClienteMenu("Anthony","123.123.123-12", "Nu");
-
-        String nome_get = cliente.get_nome();
-        String cpf_get = cliente.get_cpf();
-        String agencia = cliente.get_agencia();
-
-        cliente.menu_usuario(nome_get,cpf_get,agencia);
-        scn.close();
+        int opcoes = scn.nextInt();
+        switch(opcoes) {
+            case 1:
+                cd.criarConta();
+                break;
+            case 2:
+                cd.entrarConta();
+                break;
+            default:
+                System.out.println("Essa opcao nao existe!");
+                break;
+        }
     }
 }
