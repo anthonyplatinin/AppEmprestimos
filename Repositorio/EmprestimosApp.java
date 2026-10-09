@@ -98,15 +98,15 @@ public class EmprestimosApp implements Emprestimo {
         System.out.println("Pegando hoje: " + data_emprestimo);
         System.out.println("Vencimento: " + data_vencimento);
 
-        System.out.println("[S] - [N]");
+        System.out.println("[1] - Sim ou [0] - Nao");
         Scanner scn = new Scanner(System.in);
-        String opt = scn.nextLine();
+        int opt = scn.nextInt();
 
-        if(opt.equals("N") || opt.equals("n")) {
-            System.out.println("Volte ao menu!");
-        } else {
+        if(opt ==1) {
             enviarEmprestimo(cpf,maximo_cliente,total,data_emprestimo,data_vencimento, agencia); //cpf, quanto foi, quanto deve + data
-        } 
+        } else {
+            System.out.println("Volte ao menu");
+        }
     }
 
     @Override //se ele esta enviando entao nao esta pago
@@ -157,7 +157,7 @@ public class EmprestimosApp implements Emprestimo {
  
         int linhas = 0;
         LocalDate ultima_atualizacao = LocalDate.now(); 
-        long dias_atrasados = ChronoUnit.DAYS.between(vencimento,data); //pega a [data] 24 - 27 [vencimento]
+        long dias_atrasados = ChronoUnit.DAYS.between(vencimento,data); 
         try {    
             cnn = database_inicializer.conecao_database("emprestimos");
             PreparedStatement pp = cnn.prepareStatement(get_query());
@@ -167,7 +167,7 @@ public class EmprestimosApp implements Emprestimo {
             pp.setString(3,data.toString());
             pp.setString(4,vencimento.toString());
             pp.setString(5,status);
-            pp.setString(6,ultima_atualizacao.toString()); //a ultima att e quando ele sera enviado a tbl_devedores
+            pp.setString(6,ultima_atualizacao.toString());  
             pp.executeUpdate(); 
         }catch(SQLException e) {
             System.out.println(e);

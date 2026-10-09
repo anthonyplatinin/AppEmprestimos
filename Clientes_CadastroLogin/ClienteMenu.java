@@ -12,28 +12,51 @@ import Emprestimos.Repositorio.*;
 import Emprestimos.databases.*; 
 
 public class ClienteMenu {
-    EmprestimosApp app = new EmprestimosApp(); 
+    private EmprestimosApp app = new EmprestimosApp(); 
+    private Cadastro cd = new Cadastro();
     private Boolean tem_emprestimo = false;  
 
     //Aqui e o menu se nao possui emprestimo
-    public void menu_usuario(String nome, String cpf, String agencia) {
-        @SuppressWarnings("resource")
-        Scanner scn = new Scanner(System.in);
-        tem_emprestimo(cpf);
+    public void menu_usuario(String cpf) { 
+        String quem_e = "SELECT cpf,nome,agencia,renda_mensal FROM tbl_usuario WHERE cpf = ?";
 
+        Database_e dbs = new Database_e();
+        Connection cnn=null;
+        try {
+            cnn = dbs.conecao_database("emprestimos");
+            PreparedStatement prepare = cnn.prepareStatement(quem_e);
+            prepare.setString(1,cpf);
+
+            ResultSet querys = prepare.executeQuery();
+            if(querys.next()) {
+                String nome_cliente = querys.getString("nome");
+                String agencia_cliente = querys.getString("agencia");
+                Double renda_m = querys.getDouble("renda_mensal");
+
+                tem_emprestimo(cpf); //verifica se tem emprestimos!
+ 
+                cd.set_nome(nome_cliente);
+                cd.set_agencia(agencia_cliente);
+                cd.set_renda(renda_m);
+                //cpf nao precisa pq ele passa de funcao em funcao
+            }
+        } catch(Exception e) {
+            System.out.println("Erro no clienteMenu linha 37" + e);
+        }
+
+        Scanner scn = new Scanner(System.in);
         if(!tem_emprestimo) {
-            System.out.println("OLA, " + nome + "\n");
+            System.out.println("OLA, " + cd.get_nome() + " AG -> " + cd.get_agencia() + " CPF -> " + cpf + " R.M ->" + cd.get_renda());
             System.out.println("[1] --- SOLICITAR EMPRESTIMO");
             System.out.println("[2] --- SAIR");
   
             while(true) {
                 int opt = scn.nextInt();
-                scn.nextLine();
 
                 switch(opt) {
                     case 1:
                         System.out.println("---OFERTAS DISPONIVEL---"); 
-                        app.verificaUsuario(cpf,agencia);
+                        app.verificaUsuario(cpf,cd.get_agencia());
                         break;
                     case 2:
                         System.out.println("ATE LOGO");
@@ -42,8 +65,9 @@ public class ClienteMenu {
                         System.out.println("Opcao nao existe!");
                         break;
                 }
-            }
-        }
+                break;
+            } 
+        }  
     }
 
     //Aqui ele verifcia se tem emprestimo ativo

@@ -12,30 +12,29 @@ public class Cadastro {
     private String agencia;
     private Double renda_mensal;
 
-    void set_renda(Double rndm) {
+    public void set_renda(Double rndm) {
         this.renda_mensal = rndm;
     }
-
-    void set_nome(String n) {
+    public void set_nome(String n) {
         this.nome= n;
     }
-    void set_cpf(String c) {
+    public void set_cpf(String c) {
         this.cpf = c;
     }
-    void set_agencia(String a) {
+    public void set_agencia(String a) {
         this.agencia = a;
     }
 
-    String get_nome() {
+    public String get_nome() {
         return nome;
     }
-    String get_cpf() {
+    public String get_cpf() {
         return cpf;
     }
-    String get_agencia() {
+    public String get_agencia() {
         return agencia;
     }
-    Double get_renda() {
+    public Double get_renda() {
         return renda_mensal;
     }
 
@@ -123,7 +122,7 @@ public class Cadastro {
         System.out.println("[1 CPF]");
         String cpf = scanner.nextLine();
 
-        ClienteMenu cliente = ClienteMenu();
-        cliente.menu_usuario(get_nome(),cpf,get_agencia());
+        ClienteMenu cliente = new ClienteMenu();
+        cliente.menu_usuario(cpf);
     }
 }
